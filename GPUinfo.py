@@ -4,7 +4,7 @@ import subprocess
 
 class OSCompatibiltyError(Exception):
   def __init__(self, message, os):
-    super().__init__(message)
+    self.message = message
     self.os = os
   
   def __str__(self) -> str:
@@ -38,7 +38,8 @@ def parse_cmd(cmd):
   Divides command at the | operator and separates them into 2 lists. The two lists
   are then split at every white-space. This makes 2 lists of commands to be run
   """
-  cmd_lists = [word.split() for word in cmd.split('|')]
+  cmd_lists = [word.split() for word in cmd.split('|', 1)]
+  print(cmd_lists)
   assert len(cmd_lists) <= 2, "cmd_list contains too many lists of commands, Max Num of list: 2"
 
   GPUname_getter_cmd1 = cmd_lists[0]
@@ -77,8 +78,14 @@ def run_multi_cmds( primary_cmd, secondary_cmd):
     process = subprocess.Popen(primary_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=False, text=True)
 
     result = subprocess.Popen(secondary_cmd, stdin=process.stdout, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=False, text=True)
+
     return result.stdout
   except FileNotFoundError as err:
     print(err)
   except subprocess.CalledProcessError as err:
     print(err)
+
+if __name__ == "__main__":
+  gpus = init_and_run_cmds()
+
+  print(str(gpus))
