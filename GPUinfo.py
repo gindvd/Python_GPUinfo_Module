@@ -64,6 +64,7 @@ def init_and_run_cmds():
 
 def run_single_cmd(primary_cmd):
   try:
+    # Runs command and returns all connected GPU names as a string
     result = subprocess.Popen(primary_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=False, text=True)
     return result.stdout
   except FileNotFoundError as err:
@@ -73,7 +74,10 @@ def run_single_cmd(primary_cmd):
 
 def run_multi_cmds( primary_cmd, secondary_cmd):
   try:
-    
+    process = subprocess.Popen(primary_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=False, text=True)
+
+    result = subprocess.Popen(secondary_cmd, stdin=process.stdout, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=False, text=True)
+    return result.stdout
   except FileNotFoundError as err:
     print(err)
   except subprocess.CalledProcessError as err:
