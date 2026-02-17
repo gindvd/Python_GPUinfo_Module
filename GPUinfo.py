@@ -22,3 +22,12 @@ def cmd(device_os):
   if device_os not in ["Windows", "Linux", "Darwin"]:
     raise OSCompatibiltyError("Current OS is not compatible with this module.", device_os)
   
+  if device_os == "Windows":
+    win_ver = platform.release()
+  
+    if win_ver != "11":
+      win_ver = "legacy"
+    
+    return CMD_DICT.get(device_os, {}).get(win_ver)
+
+  return CMD_DICT.get(device_os)
