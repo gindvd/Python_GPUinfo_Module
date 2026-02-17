@@ -6,11 +6,11 @@ from typing import List
 from typing import Optional
 
 class OSCompatibiltyError(Exception):
-  def __init__(self, message, os):
+  def __init__(self, message: str, os: str) -> None:
     super().__init__(message)
     self.os = os
   
-  def __str__(self):
+  def __str__(self) -> str:
     return "{} (Non-Compatible OS: {}) List of compatible OS [Windows, Linux, Mac OS]".format(self.message, self.os)
 
 CMD_DICT = {
@@ -22,7 +22,7 @@ CMD_DICT = {
     }
 }
 
-def cmd(device_os):
+def cmd(device_os: str) -> Optional[str]:
   if device_os not in ["Windows", "Linux", "Darwin"]:
     raise OSCompatibiltyError("Current OS is not compatible with this module.", device_os)
   
@@ -36,7 +36,7 @@ def cmd(device_os):
 
   return CMD_DICT.get(device_os)
 
-def parse_cmd(cmd):
+def parse_cmd(cmd: str) -> tuple[List[str], List[str] | None] :
   """ 
   Divides command at the | operator and separates them into 2 lists. The two lists
   are then split at every white-space. This makes 2 lists of commands to be run
