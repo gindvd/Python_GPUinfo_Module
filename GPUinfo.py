@@ -1,4 +1,5 @@
 import platform
+from re import sub
 import subprocess
 
 class OSCompatibiltyError(Exception):
@@ -57,12 +58,23 @@ def init_and_run_cmds():
   assert primary_cmd != None, "cmd_getter function incorrectly returning None"
 
   if secondary_cmd == None:
-    return run_single_cmd(device_os, primary_cmd)
+    return run_single_cmd(primary_cmd)
 
-  return run_multi_cmds(device_os, primary_cmd, secondary_cmd)
+  return run_multi_cmds(primary_cmd, secondary_cmd)
 
-def run_single_cmd(device_os, primary_cmd):
-  pass
+def run_single_cmd(primary_cmd):
+  try:
+    result = subprocess.Popen(primary_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=False, text=True)
+    return result.stdout
+  except FileNotFoundError as err:
+    print(err)
+  except subprocess.CalledProcessError as err:
+    print(err)
 
-def run_multi_cmds(device_os, primary_cmd, secondary_cmd):
-  pass
+def run_multi_cmds( primary_cmd, secondary_cmd):
+  try:
+    
+  except FileNotFoundError as err:
+    print(err)
+  except subprocess.CalledProcessError as err:
+    print(err)
