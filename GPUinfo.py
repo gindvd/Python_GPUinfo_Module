@@ -1,12 +1,8 @@
 import platform
 import subprocess
 
-import typing
-from typing import List
-from typing import Optional
-
 class OSCompatibiltyError(Exception):
-  def __init__(self, message: str, os: str) -> None:
+  def __init__(self, message, os):
     super().__init__(message)
     self.os = os
   
@@ -22,7 +18,7 @@ CMD_DICT = {
     }
 }
 
-def cmd(device_os: str) -> Optional[str]:
+def cmd_getter(device_os: str):
   if device_os not in ["Windows", "Linux", "Darwin"]:
     raise OSCompatibiltyError("Current OS is not compatible with this module.", device_os)
   
@@ -36,7 +32,7 @@ def cmd(device_os: str) -> Optional[str]:
 
   return CMD_DICT.get(device_os)
 
-def parse_cmd(cmd: str) -> tuple[List[str], List[str] | None] :
+def parse_cmd(cmd):
   """ 
   Divides command at the | operator and separates them into 2 lists. The two lists
   are then split at every white-space. This makes 2 lists of commands to be run
@@ -51,3 +47,22 @@ def parse_cmd(cmd: str) -> tuple[List[str], List[str] | None] :
     GPUname_getter_cmd2 = cmd_lists[1]
 
   return GPUname_getter_cmd1, GPUname_getter_cmd2
+
+def init_and_run_cmds():
+  device_os = platform.system()
+
+  cmds = cmd_getter(device_os)
+
+  primary_cmd, secondary_cmd = parse_cmd(cmds)
+  assert primary_cmd != None, "cmd_getter function incorrectly returning None"
+
+  if secondary_cmd == None:
+    return run_single_cmd(device_os, primary_cmd)
+
+  return run_multi_cmds(device_os, primary_cmd, secondary_cmd)
+
+def run_single_cmd(device_os, primary_cmd):
+  pass
+
+def run_multi_cmds(device_os, primary_cmd, secondary_cmd):
+  pass
