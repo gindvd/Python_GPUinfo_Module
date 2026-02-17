@@ -31,3 +31,12 @@ def cmd(device_os):
     return CMD_DICT.get(device_os, {}).get(win_ver)
 
   return CMD_DICT.get(device_os)
+
+def process_cmd(cmd):
+  """ 
+  Divides command at the | operator and separates them into 2 lists. The two lists
+  are then split at every white-space. This makes 2 lists of commands to be run
+  """
+  cmd_lists = [word.split() for word in cmd.split('|')]
+  
+  assert len(cmd_lists) <= 2, "cmd_list contains too many lists of commands, Max Num of list: 2"
