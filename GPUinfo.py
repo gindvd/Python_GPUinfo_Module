@@ -42,13 +42,13 @@ def parse_cmd(cmd):
   
   assert len(cmd_lists) <= 2, "cmd_list contains too many lists of commands, Max Num of list: 2"
 
-  GPUname_getter_cmd1 = cmd_lists[0]
+  GPUname_cmd1 = cmd_lists[0]
 
-  GPUname_getter_cmd2 = None
+  GPUname_cmd2 = None
   if len(cmd_lists) == 2:
-    GPUname_getter_cmd2 = cmd_lists[1]
+    GPUname_cmd2 = cmd_lists[1]
 
-  return GPUname_getter_cmd1, GPUname_getter_cmd2
+  return GPUname_cmd1, GPUname_cmd2
 
 def GPU_names():
   device_os = platform.system()
@@ -123,10 +123,3 @@ def branding():
       brands.append(string)
       
   return brands
-
-if __name__ == "__main__":
-  brands = branding()
-  print(brands)
-
-  man = manufacturer()
-  print(man)
