@@ -11,7 +11,7 @@ class OSCompatibiltyError(Exception):
     return "{} (Non-Compatible OS: {}) List of compatible OS [Windows, Linux, Mac OS]".format(self.message, self.os)
 
 CMD_DICT = {
-  "Linux" : "lspci | grep -iE 'VGA|3D|video'",
+  "Linux" : "lspci | grep -iE VGA|3D|video",
   "Darwin" : "system_profiler SPDisplaysDataType",
   "Windows" : {
     "11" : "powershell -Command Get-CimInstance Win32_VideoController | Select-Object name",
@@ -75,11 +75,16 @@ def run_single_cmd(primary_cmd):
 
 def run_multi_cmds( primary_cmd, secondary_cmd):
   try:
-    process = subprocess.Popen(primary_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=False, text=True)
+    process = subprocess.Popen(primary_cmd, stdout=subprocess.PIPE, 
+                               stderr=subprocess.PIPE, shell=False, text=True)
 
-    result = subprocess.Popen(secondary_cmd, stdin=process.stdout, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=False, text=True)
+    result = subprocess.Popen(secondary_cmd, stdin=process.stdout, 
+                              stdout=subprocess.PIPE, stderr=subprocess.PIPE, 
+                              shell=False, text=True)
 
-    return result.stdout
+    process.stdout.close()
+    output, _ = result.communicate()
+    return output
   except FileNotFoundError as err:
     print(err)
   except subprocess.CalledProcessError as err:
@@ -88,4 +93,4 @@ def run_multi_cmds( primary_cmd, secondary_cmd):
 if __name__ == "__main__":
   gpus = init_and_run_cmds()
 
-  print(str(gpus))
+  print(gpus)
