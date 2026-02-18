@@ -1,6 +1,6 @@
 import platform
-from re import sub
 import subprocess
+import re
 
 class OSCompatibiltyError(Exception):
   def __init__(self, message, os):
@@ -50,7 +50,7 @@ def parse_cmd(cmd):
 
   return GPUname_getter_cmd1, GPUname_getter_cmd2
 
-def init_and_run_cmds():
+def GPU_names():
   device_os = platform.system()
 
   cmds = cmd_getter(device_os)
@@ -66,8 +66,12 @@ def init_and_run_cmds():
 def run_single_cmd(primary_cmd):
   try:
     # Runs command and returns all connected GPU names as a string
-    result = subprocess.Popen(primary_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=False, text=True)
-    return result.stdout
+    result = subprocess.Popen(primary_cmd, stdout=subprocess.PIPE, 
+                              stderr=subprocess.PIPE, shell=False, text=True)
+
+    output, _ = result.communicate()
+    return output.split()
+
   except FileNotFoundError as err:
     print(err)
   except subprocess.CalledProcessError as err:
@@ -84,13 +88,45 @@ def run_multi_cmds( primary_cmd, secondary_cmd):
 
     process.stdout.close()
     output, _ = result.communicate()
-    return output
+    return output.split()
+
   except FileNotFoundError as err:
     print(err)
   except subprocess.CalledProcessError as err:
     print(err)
 
-if __name__ == "__main__":
-  gpus = init_and_run_cmds()
+def clean_data(list):
+  clean_list = []
+  
+  for string in list:
+    stripped = re.sub(r"[\(\[$@*&?-].*[\)\]$@*&?-]", "", string)
+    clean_list.append(stripped)
+  
+  return clean_list
+  
+def manufacturer():
+  gpus = clean_data(GPU_names())
+  manufacturers = []
+  
+  for string in gpus:
+    if string in ["NVIDIA", "AMD", "Intel"]:
+      manufacturers.append(string)
+      
+  return manufacturers
+  
+def branding():
+  gpus = clean_data(GPU_names())
+  brands = []
+  
+  for string in gpus:
+    if string in ["GeForce", "Radeon", "Arc", "Iris", "UHD", "HD"]:
+      brands.append(string)
+      
+  return brands
 
-  print(gpus)
+if __name__ == "__main__":
+  brands = branding()
+  print(brands)
+
+  man = manufacturer()
+  print(man)
