@@ -39,7 +39,7 @@ def parse_cmd(cmd):
   are then split at every white-space. This makes 2 lists of commands to be run
   """
   cmd_lists = [word.split() for word in cmd.split('|', 1)]
-  print(cmd_lists)
+  
   assert len(cmd_lists) <= 2, "cmd_list contains too many lists of commands, Max Num of list: 2"
 
   GPUname_getter_cmd1 = cmd_lists[0]
@@ -101,7 +101,7 @@ def clean_data(list):
   for string in list:
     stripped = re.sub(r"[\(\[$@*&?-].*[\)\]$@*&?-]", "", string)
     clean_list.append(stripped)
-  
+
   return clean_list
   
 def manufacturer():
