@@ -7,7 +7,7 @@ class OSCompatibiltyError(Exception):
     super().__init__(message)
     self.os = os
   
-  def __str__(self) -> str:
+  def __str__(self):
     return "{} (Non-Compatible OS: {}) List of compatible OS [Windows, Linux, Mac OS]".format(self.message, self.os)
 
 CMD_DICT = {
