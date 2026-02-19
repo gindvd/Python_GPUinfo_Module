@@ -4,7 +4,7 @@ import re
 
 class OSCompatibiltyError(Exception):
   def __init__(self, message, os):
-    self.message = message
+    super().__init__(message)
     self.os = os
   
   def __str__(self) -> str:
