@@ -19,50 +19,42 @@ CMD_DICT = {
     }
 }
 
-def cmd_getter(device_os: str):
+def get_card_info():
+  device_os = platform.system()
+  
   if device_os not in ["Windows", "Linux", "Darwin"]:
     raise OSCompatibiltyError("Current OS is not compatible with this module.", device_os)
-  
+
   if device_os == "Windows":
     win_ver = platform.release()
   
     if win_ver != "11":
       win_ver = "legacy"
+      
+    cmd =  CMD_DICT.get(device_os, {}).get(win_ver)
+  
+  else:
+    cmd = CMD_DICT.get(device_os)
     
-    return CMD_DICT.get(device_os, {}).get(win_ver)
-
-  return CMD_DICT.get(device_os)
-
-def parse_cmd(cmd):
-  """ 
-  Divides command at the | operator and separates them into 2 lists. The two lists
-  are then split at every white-space. This makes 2 lists of commands to be run
-  """
+  # Need to seperate commands in 2 if it contains a pipe
+  # Then turn both commands into lists
   cmd_lists = [word.split() for word in cmd.split('|', 1)]
   
-  assert len(cmd_lists) <= 2, "cmd_list contains too many lists of commands, Max Num of list: 2"
+  assert len(cmd_lists) <= 2, "Command list contains too many lists of commands, Max Num of list: 2"
 
-  GPUname_cmd1 = cmd_lists[0]
-
-  GPUname_cmd2 = None
+  primary_cmd = cmd_lists[0]
+  secondary_cmd = None
+  
   if len(cmd_lists) == 2:
     GPUname_cmd2 = cmd_lists[1]
 
-  return GPUname_cmd1, GPUname_cmd2
-
-def GPU_names():
-  device_os = platform.system()
-
-  cmds = cmd_getter(device_os)
-
-  primary_cmd, secondary_cmd = parse_cmd(cmds)
-  assert primary_cmd != None, "cmd_getter function incorrectly returning None"
+  assert primary_cmd != None, "Primary command is set to None"
 
   if secondary_cmd == None:
-    return run_single_cmd(primary_cmd)
+    return run_cmd(primary_cmd)
 
-  return run_multi_cmds(primary_cmd, secondary_cmd)
-
+  return run_piped_cmds(primary_cmd, secondary_cmd)
+  
 def run_single_cmd(primary_cmd):
   try:
     # Runs command and returns all connected GPU names as a string
