@@ -135,12 +135,12 @@ def manufacturer():
       
   return manufacturers
   
-def branding():
+def brand():
   gpus = clean_data(GPU_names())
-  brands = []
+  brand_list = []
   
   for string in gpus:
     if string in ["GeForce", "Radeon", "Arc", "Iris", "UHD", "HD"]:
-      brands.append(string)
+      brand_list.append(string)
       
   return brands
