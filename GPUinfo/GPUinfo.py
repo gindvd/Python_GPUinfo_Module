@@ -9,8 +9,7 @@ from GPUinfo.handler import *
 
 def get_manufacturers():
   device_info = get_gpu_names()
-  print(device_info)
-
+  
   items = device_info.splitlines()
 
   manufacturers = []
