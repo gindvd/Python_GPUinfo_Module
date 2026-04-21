@@ -7,16 +7,25 @@ Version 1.0.0
 
 from GPUinfo.handler import *
 
-def get_manufacturers():
-  device_info = get_gpu_names()
-  
-  items = device_info.splitlines()
+def manufacturers() -> list[str]:
+  """
+  Possible returns options:
+  NVIDIA - for NVIDIA GPUS
+  AMD - for AMD for dedicated and integrated GPUs
+  Intel - for Intel for dedicated and integrated GPUs
+  Apple - for Macbook GPUs
+  Adapter - possible returns on Virtual Machines and Container hosted OS
+  """
 
-  manufacturers = []
-  for item in items:
+  string_of_connected_gpus: str = get_gpu_names()
+  
+  list_of_connected_gpus: list[str] = string_of_connected_gpus.splitlines()
+
+  device_manufacturers = []
+  for connected_gpu in list_of_connected_gpus:
     temp = []
-    item = remove_symbols(item)
-    temp = item.split()
+    connected_gpu = remove_symbols(item)
+    temp = connected_gpu.split()
 
     if temp == []:
       continue
@@ -28,9 +37,9 @@ def get_manufacturers():
       name = "AMD"
 
     # possible options for OS run on virtual machines, and containers
-    if name in ["Microsoft", "VMware", "VirtualBox"]:
+    elif name in ["Microsoft", "VMware", "VirtualBox"]:
       name = "Adapter"
 
-    manufacturers.append(name)
+    device_manufacturers.append(name)
 
-  return manufacturers
+  return device_manufacturers
