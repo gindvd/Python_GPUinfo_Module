@@ -5,7 +5,7 @@ David Gingerich
 Version 1.0.0
 """
 
-from handler import *
+from GPUinfo.handler import *
 
 def manufacturers() -> list[str]:
   """
